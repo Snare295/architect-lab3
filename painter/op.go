@@ -58,8 +58,8 @@ func (f *Figure) Do(t screen.Texture) bool {
 	const WidthVert int = 165
 	cYellow := color.RGBA{R: 255, G: 255, B: 0, A: 1}
 
-	t.Fill(image.Rect(f.X-WidthVert/2, f.Y, f.X+WidthVert/2, f.Y+400), cYellow, draw.Src)
-	t.Fill(image.Rect(f.X, f.Y-HeightHoriz/2, f.X+400, f.Y+HeightHoriz/2), cYellow, draw.Src)
+	t.Fill(image.Rect(f.X - WidthVert/2, f.Y - 200, f.X + WidthVert/2, f.Y + 200), cYellow, draw.Src)
+	t.Fill(image.Rect(f.X - 200, f.Y - HeightHoriz/2, f.X +200, f.Y + HeightHoriz/2), cYellow, draw.Src)
 
 	return false
 }
