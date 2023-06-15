@@ -65,7 +65,7 @@ func TestLoop_Post(t *testing.T) {
 }
 
 func TestLoop_Pull(t *testing.T) {
-	mq := &messageQueue{}
+	mq := &MessageQueue{}
 
 	operationA := &queueMock{}
 	go func() {

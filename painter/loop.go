@@ -19,8 +19,7 @@ type Loop struct {
 	next screen.Texture // текстура, яка зараз формується
 	prev screen.Texture // текстура, яка була відправленя останнього разу у Receiver
 
-	mq messageQueue
-
+	mq MessageQueue
 	stop    chan struct{}
 	stopReq bool
 }
@@ -59,13 +58,13 @@ func (l *Loop) StopAndWait() {
 	<-l.stop
 }
 
-type messageQueue struct {
+type MessageQueue struct {
 	ops     []Operation
 	mu      sync.Mutex
 	blocked chan struct{}
 }
 
-func (mq *messageQueue) push(op Operation) {
+func (mq *MessageQueue) push(op Operation) {
 	mq.mu.Lock()
 	defer mq.mu.Unlock()
 
@@ -77,7 +76,7 @@ func (mq *messageQueue) push(op Operation) {
 	}
 }
 
-func (mq *messageQueue) pull() Operation {
+func (mq *MessageQueue) pull() Operation {
 	mq.mu.Lock()
 	defer mq.mu.Unlock()
 
@@ -94,7 +93,7 @@ func (mq *messageQueue) pull() Operation {
 	return op
 }
 
-func (mq *messageQueue) empty() bool {
+func (mq *MessageQueue) empty() bool {
 	mq.mu.Lock()
 	defer mq.mu.Unlock()
 
