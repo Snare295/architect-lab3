@@ -64,38 +64,38 @@ type MessageQueue struct {
 	blocked chan struct{}
 }
 
-func (mq *MessageQueue) push(op Operation) {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
+func (MQ *MessageQueue) push(op Operation) {
+	MQ.mu.Lock()
+	defer MQ.mu.Unlock()
 
-	mq.ops = append(mq.ops, op)
+	MQ.ops = append(MQ.ops, op)
 
-	if mq.blocked != nil {
-		close(mq.blocked)
-		mq.blocked = nil
+	if MQ.blocked != nil {
+		close(MQ.blocked)
+		MQ.blocked = nil
 	}
 }
 
-func (mq *MessageQueue) pull() Operation {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
+func (MQ *MessageQueue) pull() Operation {
+	MQ.mu.Lock()
+	defer MQ.mu.Unlock()
 
-	for len(mq.ops) == 0 {
-		mq.blocked = make(chan struct{})
-		mq.mu.Unlock()
-		<-mq.blocked
-		mq.mu.Lock()
+	for len(MQ.ops) == 0 {
+		MQ.blocked = make(chan struct{})
+		MQ.mu.Unlock()
+		<-MQ.blocked
+		MQ.mu.Lock()
 	}
 
-	op := mq.ops[0]
-	mq.ops[0] = nil
-	mq.ops = mq.ops[1:]
+	op := MQ.ops[0]
+	MQ.ops[0] = nil
+	MQ.ops = MQ.ops[1:]
 	return op
 }
 
-func (mq *MessageQueue) empty() bool {
-	mq.mu.Lock()
-	defer mq.mu.Unlock()
+func (MQ *MessageQueue) empty() bool {
+	MQ.mu.Lock()
+	defer MQ.mu.Unlock()
 
-	return len(mq.ops) == 0
+	return len(MQ.ops) == 0
 }
