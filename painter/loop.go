@@ -59,7 +59,7 @@ func (l *Loop) StopAndWait() {
 }
 
 type MessageQueue struct {
-	ops     []Operation
+	Ops     []Operation
 	mu      sync.Mutex
 	blocked chan struct{}
 }
@@ -68,7 +68,7 @@ func (MQ *MessageQueue) push(op Operation) {
 	MQ.mu.Lock()
 	defer MQ.mu.Unlock()
 
-	MQ.ops = append(MQ.ops, op)
+	MQ.Ops = append(MQ.Ops, op)
 
 	if MQ.blocked != nil {
 		close(MQ.blocked)
@@ -80,16 +80,16 @@ func (MQ *MessageQueue) pull() Operation {
 	MQ.mu.Lock()
 	defer MQ.mu.Unlock()
 
-	for len(MQ.ops) == 0 {
+	for len(MQ.Ops) == 0 {
 		MQ.blocked = make(chan struct{})
 		MQ.mu.Unlock()
 		<-MQ.blocked
 		MQ.mu.Lock()
 	}
 
-	op := MQ.ops[0]
-	MQ.ops[0] = nil
-	MQ.ops = MQ.ops[1:]
+	op := MQ.Ops[0]
+	MQ.Ops[0] = nil
+	MQ.Ops = MQ.Ops[1:]
 	return op
 }
 
@@ -97,5 +97,5 @@ func (MQ *MessageQueue) empty() bool {
 	MQ.mu.Lock()
 	defer MQ.mu.Unlock()
 
-	return len(MQ.ops) == 0
+	return len(MQ.Ops) == 0
 }
